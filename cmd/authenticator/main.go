@@ -21,7 +21,8 @@ func main() {
 		panic(err)
 	}
 
-	recordId, err := h.CreateRecord(certbot.Parameters.Domain, "TXT", ttl, certbot.Parameters.Validation)
+	domain := fmt.Sprintf("_acme-challenge.%v", certbot.Parameters.Domain)
+	recordId, err := h.CreateRecord(domain, "TXT", ttl, certbot.Parameters.Validation)
 	if err != nil {
 		panic(err)
 	}
