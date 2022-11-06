@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"net"
 	"os"
+	"time"
 
 	"github.com/hitecherik/hetzner-certbot-dns/pkg/certbot"
 	"github.com/hitecherik/hetzner-certbot-dns/pkg/hetzner"
@@ -28,4 +31,29 @@ func main() {
 	}
 
 	fmt.Println(recordId)
+
+	for !checkTXT(domain, certbot.Parameters.Validation) {
+		time.Sleep(ttl * time.Second)
+	}
+}
+
+func checkTXT(domain string, expected string) bool {
+	results, err := net.LookupTXT(domain)
+
+	if err != nil {
+		var dnsErr *net.DNSError
+		if errors.As(err, &dnsErr) {
+			return false
+		} else {
+			panic(err)
+		}
+	}
+
+	for _, result := range results {
+		if result == expected {
+			return true
+		}
+	}
+
+	return false
 }
