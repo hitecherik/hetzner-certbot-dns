@@ -10,10 +10,6 @@ type Hetzner struct {
 	zoneIds map[string]string
 }
 
-func (h *Hetzner) GetZoneIds() map[string]string {
-	return h.zoneIds
-}
-
 func New(apiKey string) *Hetzner {
 	return &Hetzner{
 		api: newHetznerApi(apiKey),
